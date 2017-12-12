@@ -272,3 +272,7 @@ function nextLevel() {
     setupBoxes(document.cookie);
   }
 }
+
+function currLevel() {
+  console.log(document.cookie);
+}
