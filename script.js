@@ -117,15 +117,16 @@ class Box {
 }
 
 class Map {
-  constructor(currLevel) {
+  constructor(currLevel, callback) {
     this.ready = false;
     this.level = loadStrings("data/Level_" + currLevel + ".txt", () => {
+      callback();
       this.ready = true;
     });
   }
 
   draw() {
-    this.tileSize = 1000 / (this.level.length + 1);
+    this.tileSize = width / (this.level.length + 1);
     noStroke();
     for (let i = (this.level.length - this.level[0]); i < this.level.length; i++) {
       for (let j = 0; j < this.level[i].length; j++) {
@@ -159,7 +160,7 @@ class Map {
   }
 
   getTileSize() {
-    return 1000 / (this.level.length + 1);
+    return width / (this.level.length + 1);
   }
 
   getLevelLength() {
@@ -178,10 +179,10 @@ let currLevel;
 
 function preload() {
   if (cookieIsValid(document.cookie)) {
-    map = new Map(document.cookie);
+    map = new Map(document.cookie, function() {});
   } else {
     document.cookie = "1_1"
-    map = new Map("1_1");
+    map = new Map("1_1", function() {});
   }
   currLevel = document.cookie;
 }
@@ -253,7 +254,6 @@ function cookieIsValid(keks) {
 
 function setupBoxes(level) {
   boxes = [];
-  while (!map.ready);
   let bufInfo = map.getData();
   for (let i = 1; i < bufInfo.length - parseInt(bufInfo[0]); i += 2) {
     boxes.push(new Box((i - 1) / 2, bufInfo[i], bufInfo[i + 1], map.getTileSize(), map.getLevelLength()));
@@ -266,13 +266,15 @@ function nextLevel() {
   if (currLevel !== "1_10") {
     currLevel = currLevel.split('_')[0] + "_" + (parseInt(currLevel.split('_')[1]) + 1);
     document.cookie = currLevel;
-    map = new Map(currLevel);
-    setupBoxes(document.cookie);
+    map = new Map(currLevel, () => {
+      setupBoxes(document.cookie);
+    });
   } else {
     currLevel = "1_1";
     document.cookie = currLevel;
-    map = new Map(currLevel);
-    setupBoxes(document.cookie);
+    map = new Map(currLevel, () => {
+      setupBoxes(document.cookie);
+    });
   }
 }
 
