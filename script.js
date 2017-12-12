@@ -112,7 +112,6 @@ class Box {
   }
 
   isCorrect(map) {
-    console.log(this.x + ", " + this.y);
     return map.getBlock(this.x, this.y) == numToColor[this.color];
   }
 }
@@ -252,7 +251,6 @@ function setupBoxes(level) {
   boxes = [];
   loadStrings("data/Level_" + level + ".txt", function(bufInfo) {
     while (!map.ready);
-    console.log(bufInfo);
     for (let i = 1; i < bufInfo.length - parseInt(bufInfo[0]); i += 2) {
       boxes.push(new Box((i - 1) / 2, bufInfo[i], bufInfo[i + 1], map.getTileSize(), map.getLevelLength()));
     }
