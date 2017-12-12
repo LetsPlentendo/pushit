@@ -165,6 +165,10 @@ class Map {
   getLevelLength() {
     return this.level.length;
   }
+
+  getData() {
+    return this.level;
+  }
 }
 
 let boxes = [];
@@ -249,13 +253,12 @@ function cookieIsValid(keks) {
 
 function setupBoxes(level) {
   boxes = [];
-  loadStrings("data/Level_" + level + ".txt", function(bufInfo) {
-    while (!map.ready);
-    for (let i = 1; i < bufInfo.length - parseInt(bufInfo[0]); i += 2) {
-      boxes.push(new Box((i - 1) / 2, bufInfo[i], bufInfo[i + 1], map.getTileSize(), map.getLevelLength()));
-    }
-    start = true;
-  });
+  while (!map.ready);
+  let bufInfo = map.getData();
+  for (let i = 1; i < bufInfo.length - parseInt(bufInfo[0]); i += 2) {
+    boxes.push(new Box((i - 1) / 2, bufInfo[i], bufInfo[i + 1], map.getTileSize(), map.getLevelLength()));
+  }
+  start = true;
 }
 
 function nextLevel() {
