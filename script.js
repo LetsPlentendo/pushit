@@ -128,7 +128,7 @@ class Map {
   draw() {
     this.tileSize = 1000 / (this.level.length + 1);
     noStroke();
-    for (let i = 3; i < this.level.length; i++) {
+    for (let i = (this.level.length - this.level[0]); i < this.level.length; i++) {
       for (let j = 0; j < this.level[i].length; j++) {
         switch (this.level[i].charAt(j)) {
           case '0':
@@ -150,13 +150,13 @@ class Map {
             fill("#FFF943");
             break;
         }
-        rect(j * (this.tileSize + this.tileSize / this.level.length), (i - 3) * (this.tileSize + this.tileSize / this.level.length), this.tileSize, this.tileSize, 5);
+        rect(j * (this.tileSize + this.tileSize / this.level.length), (i - (this.level.length - this.level[0])) * (this.tileSize + this.tileSize / this.level.length), this.tileSize, this.tileSize, 5);
       }
     }
   }
 
   getBlock(x, y) {
-    return this.level[parseInt(y) + 3].charAt(x);
+    return this.level[parseInt(y) + (this.level.length - this.level[0])].charAt(x);
   }
 
   getTileSize() {
