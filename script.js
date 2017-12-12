@@ -273,6 +273,6 @@ function nextLevel() {
   }
 }
 
-function currLevel() {
+function getCurrLevel() {
   console.log(document.cookie);
 }
