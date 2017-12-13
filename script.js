@@ -74,8 +74,28 @@ class Box {
     }
   }
 
-  setMovement(direction) {
-    if (this.isClicked && !this.boxMoving) {
+  setMovement(direction, boxPos) {
+    let newBoxX = this.x;
+    let newBoxY = this.y;
+    switch (direction) {
+      case directions.UP:
+        newBoxY--;
+        break;
+      case directions.DOWN:
+        newBoxY++;
+        break;
+      case directions.RIGHT:
+        newBoxX++;
+        break;
+      case directions.LEFT:
+        newBoxX--;
+        break;
+    }
+    let isOK = true;
+    for (let i = 0; i < boxPos.length; i++) {
+      isOK = isOK && !((boxPos[i])[0] == newBoxX && (boxPos[i])[1] == newBoxY);
+    }
+    if (this.isClicked && !this.boxMoving && isOK) {
       this.direction = direction;
       this.boxMoving = true;
     }
@@ -132,6 +152,10 @@ class Map {
 
   move(direction) {
     direction -= 37;
+    let boxPos = [];
+    this.boxes.forEach((box) => {
+      boxPos.push([box.x, box.y]);
+    })
     this.boxes.forEach((box) => {
       switch (direction) {
         case directions.UP:
@@ -155,7 +179,7 @@ class Map {
           }
           break;
       }
-      box.setMovement(direction);
+      box.setMovement(direction, boxPos);
     });
   }
 }
@@ -210,5 +234,8 @@ function cookieIsValid(cookie) {
 }
 
 function getNewLevelName(oldName) {
+  if (oldName == "1_10") {
+    return "1_1";
+  }
   return (oldName.split('_')[0] + "_" + (Number(oldName.split('_')[1]) + 1));
 }
