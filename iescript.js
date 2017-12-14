@@ -135,10 +135,10 @@ Map.prototype.draw = function () {
 				}
 		}
 		var levelComplete = true;
-		this.boxes.forEach((box) => {
+		for (var i = 0; i < this.boxes.length; i++) {
 				box.draw(this.tileSize);
 				levelComplete = levelComplete && this.getBlock(box.x, box.y) == box.color + 2;
-		});
+		}
 		this.levelComplete = levelComplete;
 }
 
@@ -197,7 +197,7 @@ Map.prototype.move = function (direction) {
 								break;
 				}
 				this.boxes[i].setMovement(direction, boxPos);
-		});
+		};
 }
 
 var Tileset;
