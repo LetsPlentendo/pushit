@@ -204,7 +204,12 @@ function setup() {
 function draw() {
   if (map.isReady()) {
     background(250);
-    map.draw();
+    try {
+      map.draw();
+    } catch (err) {
+      var error = document.createElement("span");
+      error.textContent = err;
+    }
     if (map.levelComplete) {
       document.cookie = getNewLevelName(document.cookie);
       map = new Map(document.cookie);
