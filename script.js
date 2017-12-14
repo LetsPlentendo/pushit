@@ -190,10 +190,10 @@ let Boxes;
 function preload() {
   Tileset = loadImage("assets/Tileset.png");
   Boxes = loadImage("assets/Boxes.png");
-  if (!cookieIsValid(document.cookie)) {
-    document.cookie = "1_1"
+  if (!cookieIsValid(localStorage.progress)) {
+    localStorage.set("progress", "1_1");
   }
-  map = new Map(document.cookie);
+  map = new Map(localStorage.progress);
 }
 
 function setup() {
@@ -204,15 +204,10 @@ function setup() {
 function draw() {
   if (map.isReady()) {
     background(250);
-    try {
-      map.draw();
-    } catch (err) {
-      var error = document.createElement("span");
-      error.textContent = err;
-    }
+    map.draw();
     if (map.levelComplete) {
-      document.cookie = getNewLevelName(document.cookie);
-      map = new Map(document.cookie);
+      localStorage.set("progress", getNewLevelName(localStorage.progress));
+      map = new Map(localStorage.progress);
     }
   }
 }
