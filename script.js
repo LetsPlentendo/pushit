@@ -191,7 +191,7 @@ function preload() {
   Tileset = loadImage("assets/Tileset.png");
   Boxes = loadImage("assets/Boxes.png");
   if (!cookieIsValid(localStorage.progress)) {
-    localStorage.set("progress", "1_1");
+    localStorage.setItem("progress", "1_1");
   }
   map = new Map(localStorage.progress);
 }
@@ -206,7 +206,7 @@ function draw() {
     background(250);
     map.draw();
     if (map.levelComplete) {
-      localStorage.set("progress", getNewLevelName(localStorage.progress));
+      localStorage.setItem("progress", getNewLevelName(localStorage.progress));
       map = new Map(localStorage.progress);
     }
   }
