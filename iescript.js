@@ -1,4 +1,4 @@
-let directions = {
+var directions = {
   UP: 1,
   RIGHT: 2,
   DOWN: 3,
@@ -70,7 +70,7 @@ function Box (color, x, y) {
 								break;
 				}
 		};
-		let index = this.color + ((this.isClicked) ? 4 : 0);
+		var index = this.color + ((this.isClicked) ? 4 : 0);
 		image(Boxes, size * this.x + this.xAnim, size * this.y + this.yAnim, size, size, 0, 60 * index, 60, 60);
 }
 
@@ -83,8 +83,8 @@ Box.prototype.click = function (x, y) {
 }
 
 Box.prototype.setMovement = function (direction, boxPos) {
-		let newBoxX = this.x;
-		let newBoxY = this.y;
+		var newBoxX = this.x;
+		var newBoxY = this.y;
 		switch (direction) {
 				case directions.UP:
 						newBoxY--;
@@ -99,8 +99,8 @@ Box.prototype.setMovement = function (direction, boxPos) {
 						newBoxX--;
 						break;
 		}
-		let isOK = true;
-		for (let i = 0; i < boxPos.length; i++) {
+		var isOK = true;
+		for (var i = 0; i < boxPos.length; i++) {
 				isOK = isOK && !((boxPos[i])[0] == newBoxX && (boxPos[i])[1] == newBoxY);
 		}
 		if (this.isClicked && !this.boxMoving && isOK) {
@@ -119,20 +119,22 @@ Box.prototype.setMovement = function (direction, boxPos) {
 function Map (levelName) {
 		this.levelLoaded = false;
 		this.levelComplete = false;
-		this.levelData = loadStrings("assets/levels/" + levelName + ".txt", (data) => {
-				this.boxes = this.createBoxes(data);
-				this.levelLoaded = true;
-		});
+		this.levelData = loadStrings("assets/levels/" + levelName + ".txt", this.isDone(data))
+}
+
+Map.prototype.isDone(data) {
+	this.boxes = this.createBoxes(data);
+	this.levelLoaded = true;
 }
 
 Map.prototype.draw = function () {
 		this.tileSize = width / (this.levelData.length - this.levelData[0]);
-		for (let y = this.levelData[0]; y < this.levelData.length; y++) {
-				for (let x = 0; x < this.levelData[y].length; x++) {
+		for (var y = this.levelData[0]; y < this.levelData.length; y++) {
+				for (var x = 0; x < this.levelData[y].length; x++) {
 						image(Tileset, this.tileSize * x, this.tileSize * (y - this.levelData[0]), this.tileSize, this.tileSize, 0, 60 * this.levelData[y].charAt(x), 60, 60);
 				}
 		}
-		let levelComplete = true;
+		var levelComplete = true;
 		this.boxes.forEach((box) => {
 				box.draw(this.tileSize);
 				levelComplete = levelComplete && this.getBlock(box.x, box.y) == box.color + 2;
@@ -149,55 +151,57 @@ Map.prototype.isReady = function () {
 }
 
 Map.prototype.createBoxes = function (data) {
-		let b = [];
-		for (let i = 1; i < this.levelData[0]; i += 2) {
+		var b = [];
+		for (var i = 1; i < this.levelData[0]; i += 2) {
 				b.push(new Box((i - 1) / 2, Number(this.levelData[i]), Number(this.levelData[i + 1])));
 		}
 		return b;
 }
 
 Map.prototype.click = function (mX, mY) {
-		this.boxes.forEach((box) => {
-				box.click(Math.floor(mX / this.tileSize),
-						Math.floor(mY / this.tileSize));
-		});
+		this.boxes.forEach(this.clickBox(box));
+}
+
+Map.prototype.clickBox(box) {
+	box.click(Math.floor(mX / this.tileSize),
+	Math.floor(mY / this.tileSize));
 }
 
 Map.prototype.move = function (direction) {
 		direction -= 37;
-		let boxPos = [];
-		this.boxes.forEach((box) => {
-				boxPos.push([box.x, box.y]);
-		})
-		this.boxes.forEach((box) => {
+		var boxPos = [];
+		for (var i = 0; i < this.boxes.length; i++) {
+			boxPos.push([this.boxes[i].x, this.boxes[i].y]);
+		}
+		for (var i = 0; i < this.boxes.length; i++) {
 				switch (direction) {
 						case directions.UP:
-								if (this.getBlock(box.x, box.y - 1) == '0') {
+								if (this.getBlock(this.boxes[i].x, this.boxes[i].y - 1) == '0') {
 										return;
 								}
 								break;
 						case directions.DOWN:
-								if (this.getBlock(box.x, box.y + 1) == '0') {
+								if (this.getBlock(this.boxes[i].x, this.boxes[i].y + 1) == '0') {
 										return;
 								}
 								break;
 						case directions.RIGHT:
-								if (this.getBlock(box.x + 1, box.y) == '0') {
+								if (this.getBlock(this.boxes[i].x + 1, this.boxes[i].y) == '0') {
 										return;
 								}
 								break;
 						case directions.LEFT:
-								if (this.getBlock(box.x - 1, box.y) == '0') {
+								if (this.getBlock(this.boxes[i].x - 1, this.boxes[i].y) == '0') {
 										return;
 								}
 								break;
 				}
-				box.setMovement(direction, boxPos);
+				this.boxes[i].setMovement(direction, boxPos);
 		});
 }
 
-let Tileset;
-let Boxes;
+var Tileset;
+var Boxes;
 
 function preload() {
   Tileset = loadImage("assets/Tileset.png");
@@ -238,7 +242,7 @@ function keyPressed() {
 }
 
 function cookieIsValid(cookie) {
-  let splittedCookie = cookie.split('_');
+  var splittedCookie = cookie.split('_');
   if (splittedCookie.length == 2) {
     return (!isNaN(parseInt(splittedCookie[0])) && !isNaN(parseInt(splittedCookie[1])));
   }
