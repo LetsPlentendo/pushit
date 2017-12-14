@@ -226,9 +226,11 @@ function keyPressed() {
 }
 
 function cookieIsValid(cookie) {
-  let splittedCookie = cookie.split('_');
-  if (splittedCookie.length == 2) {
-    return (!isNaN(parseInt(splittedCookie[0])) && !isNaN(parseInt(splittedCookie[1])));
+  if (cookie !== undefined) {
+    let splittedCookie = cookie.split('_');
+    if (splittedCookie.length == 2) {
+      return (!isNaN(parseInt(splittedCookie[0])) && !isNaN(parseInt(splittedCookie[1])));
+    }
   }
   return false;
 }
