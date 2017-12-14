@@ -119,7 +119,7 @@ Box.prototype.setMovement = function (direction, boxPos) {
 function Map (levelName) {
 		this.levelLoaded = false;
 		this.levelComplete = false;
-		this.levelData = loadStrings("assets/levels/" + levelName + ".txt", this.isDone(data))
+		this.levelData = loadStrings("assets/levels/" + levelName + ".txt", this.isDone(data));
 }
 
 Map.prototype.isDone(data) {
