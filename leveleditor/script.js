@@ -9,6 +9,9 @@ let map;
 let Font;
 let Tileset;
 let Spawns;
+let scrollvy = 0;
+let oldY;
+let scrollable = false;
 
 class Map {
   constructor(data) {
@@ -118,6 +121,15 @@ function drawMenu() {
 
 
 function drawEditor() {
+  if (!mouseIsPressed) {
+    scrollvy *= 0.8;
+    scrollPos += scrollvy;
+  }
+  if (scrollPos <= 0) {
+    scrollPos = 0;
+  } else if (scrollPos >= maxScroll) {
+    scrollPos = maxScroll;
+  }
   editorSize = width * 0.75;
   textSize(50);
   if (isEmpty) {
@@ -125,7 +137,6 @@ function drawEditor() {
   } else {
     map.draw(editorSize);
   }
-
   tPadding = width * 0.05;
   tSize = width * 0.15;
   maxScroll = Tileset.height + Spawns.height + (Tileset.height / 60 + Spawns.height / 60 - 10) * tPadding;
@@ -175,6 +186,8 @@ function drawEditor() {
 }
 
 function mousePressed() {
+  oldY = mouseY;
+  scrollable = mouseX >= editorSize + 5 && mouseX <= width && mouseY >= 0 && mouseY <= height;
   if (mouseIn("SELECTION")) {
     let bufY = (mouseY + scrollPos - tPadding) % (tSize + tPadding);
     if (bufY >= 0 && bufY <= tSize) {
@@ -216,6 +229,20 @@ function mouseWheel(event) {
       scrollPos = maxScroll;
     }
   }
+}
+
+function mouseDragged() {
+  if (scrollable) {
+    scrollvy = (oldY - mouseY);
+    scrollPos += scrollvy;
+    if (scrollPos <= 0) {
+      scrollPos = 0;
+    } else if (scrollPos >= maxScroll) {
+      scrollPos = maxScroll;
+    }
+    oldY = mouseY;
+  }
+  return false;
 }
 
 function roundTo(num, roundTo) {
