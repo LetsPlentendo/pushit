@@ -122,7 +122,7 @@ function Map (levelName) {
 		this.levelData = loadStrings("assets/levels/" + levelName + ".txt", this.isDone(data));
 }
 
-Map.prototype.isDone(data) {
+Map.prototype.isDone = function (data) {
 	this.boxes = this.createBoxes(data);
 	this.levelLoaded = true;
 }
@@ -162,7 +162,7 @@ Map.prototype.click = function (mX, mY) {
 		this.boxes.forEach(this.clickBox(box));
 }
 
-Map.prototype.clickBox(box) {
+Map.prototype.clickBox = function (box) {
 	box.click(Math.floor(mX / this.tileSize),
 	Math.floor(mY / this.tileSize));
 }
