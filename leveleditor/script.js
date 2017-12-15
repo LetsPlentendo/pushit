@@ -75,11 +75,16 @@ function setup() {
   noSmooth();
   textFont(Font);
   textAlign(CENTER, CENTER);
-  let emptyMap = ["1"];
-  for (let i = 0; i < 7; i++) {
-    emptyMap.push('0'.repeat(7));
+  if (window.location.href.split('?').length == 2) {
+    map = new Map(window.location.href.split('?')[1].split(','));
+  } else {
+    let emptyMap = ["1"];
+    for (let i = 0; i < 7; i++) {
+      emptyMap.push('0'.repeat(7));
+    }
+    map = new Map(emptyMap);
   }
-  map = new Map(emptyMap);
+  createFileInput(loadFile);
 }
 
 function draw() {
@@ -283,4 +288,10 @@ function arrayToString(array) {
   }
   writer.close();
   writer.flush();
+}
+
+function loadFile(data) {
+  console.log(data.data.split('\n').substr(0, ));
+  map = new Map(data.data.split('\n'));
+  isEmpty = false;
 }
