@@ -179,10 +179,15 @@ function drawEditor() {
       image(Spawns, roundTo(mouseX, map.tileSize), roundTo(mouseY, map.tileSize), map.tileSize, map.tileSize, 0, 60 * (currSel - Tileset.height / 60), 60, 60);
     }
   }
+  if (mouseX >= 0 && mouseX <= editorSize - 5 && mouseY >= editorSize + 5 && mouseY <= height) {
+    cursor(HAND);
+  }
   noTint();
   textSize(60);
   fill("#000000");
-  text("New file: N\tSave file: S", editorSize / 2, editorSize + width * 0.125);
+  line((editorSize + 5) / 2, editorSize + 5, (editorSize + 5) / 2, height);
+  text("New file", (editorSize + 5) / 4, editorSize + width * 0.125);
+  text("Save file", (editorSize + 5) / 4 * 3, editorSize + width * 0.125);
 }
 
 function mousePressed() {
@@ -201,6 +206,20 @@ function mousePressed() {
     let currMax = (Number(map.levelData[0]) - 1) / 2 + 5;
     map.editPos(parseInt(roundTo(mouseX, map.tileSize) / map.tileSize), parseInt(roundTo(mouseY, map.tileSize) / map.tileSize), currSel, currMax !== currSel - 1);
   }
+  if (mouseX >= 0 && mouseX <= editorSize - 5 && mouseY >= editorSize + 5 && mouseY <= height) {
+    if (mouseX < (editorSize - 5) / 2) {
+      let size = prompt("Please enter the size of the level:");
+      let emptyMap = ["1"];
+      for (let i = 0; i < size; i++) {
+        emptyMap.push('0'.repeat(size));
+      }
+      map = new Map(emptyMap);
+      isEmpty = false;
+    } else {
+      arrayToString(map.levelData);
+    }
+  }
+  return false;
 }
 
 function keyPressed() {
