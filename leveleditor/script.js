@@ -183,16 +183,18 @@ function drawEditor() {
     cursor(HAND);
   }
   noTint();
-  textSize(60);
+  textSize(40);
   fill("#000000");
-  line((editorSize + 5) / 2, editorSize + 5, (editorSize + 5) / 2, height);
-  text("New file", (editorSize + 5) / 4, editorSize + width * 0.125);
-  text("Save file", (editorSize + 5) / 4 * 3, editorSize + width * 0.125);
+  line((editorSize + 5) / 3, editorSize + 5, (editorSize + 5) / 3, height);
+  line((editorSize + 5) / 3 * 2, editorSize + 5, (editorSize + 5) / 3 * 2, height);
+  text("New level", (editorSize + 5) / 6, editorSize + width * 0.125);
+  text("Save level", (editorSize + 5) / 6 * 3, editorSize + width * 0.125);
+  text("Test level", (editorSize + 5) / 6 * 5, editorSize + width * 0.125);
 }
 
 function mousePressed() {
   oldY = mouseY;
-  scrollable = mouseX >= editorSize + 5 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+  scrollable = mouseX >= editorSize + 5 && mouseX <= width - 20 && mouseY >= 0 && mouseY <= height;
   if (mouseIn("SELECTION")) {
     let bufY = (mouseY + scrollPos - tPadding) % (tSize + tPadding);
     if (bufY >= 0 && bufY <= tSize) {
@@ -207,7 +209,7 @@ function mousePressed() {
     map.editPos(parseInt(roundTo(mouseX, map.tileSize) / map.tileSize), parseInt(roundTo(mouseY, map.tileSize) / map.tileSize), currSel, currMax !== currSel - 1);
   }
   if (mouseX >= 0 && mouseX <= editorSize - 5 && mouseY >= editorSize + 5 && mouseY <= height) {
-    if (mouseX < (editorSize - 5) / 2) {
+    if (mouseX < (editorSize + 5) / 3) {
       let size = prompt("Please enter the size of the level:");
       let emptyMap = ["1"];
       for (let i = 0; i < size; i++) {
@@ -215,28 +217,13 @@ function mousePressed() {
       }
       map = new Map(emptyMap);
       isEmpty = false;
-    } else {
+    } else if (mouseX < (editorSize + 5) / 3 * 2) {
       arrayToString(map.levelData);
+    } else {
+      window.open("testLevel/index.html?" + map.levelData);
     }
   }
   return false;
-}
-
-function keyPressed() {
-  console.log(keyCode);
-  switch (keyCode) {
-    case 78:
-      let size = prompt("Please enter the size of the level:");
-      let emptyMap = ["1"];
-      for (let i = 0; i < size; i++) {
-        emptyMap.push('0'.repeat(size));
-      }
-      map = new Map(emptyMap);
-      isEmpty = false;
-      break;
-    case 83:
-      arrayToString(map.levelData);
-  }
 }
 
 function mouseWheel(event) {
