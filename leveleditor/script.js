@@ -1,4 +1,6 @@
 let currState = "EDITOR";
+const TILESET_SIZE = 6;
+const BLOCK_NUMBER = 4;
 let isEmpty = true;
 let scrollPos = 0;
 let currSel = 0;
@@ -35,14 +37,14 @@ class Map {
   }
 
   editPos(x, y, selection, exists) {
-    if (selection <= 5) {
+    if (selection <= TILESET_SIZE) {
       let realY = y + Number(this.levelData[0])
       this.levelData[realY] = replaceChar(this.levelData[realY], selection, x);
     } else {
       if (exists) {
-        if (this.levelData[(selection - 6) * 2 + 1] == x && this.levelData[(selection - 6) * 2 + 2] == y) {
+        if (this.levelData[(selection - TILESET_SIZE - 1) * 2 + 1] == x && this.levelData[(selection - TILESET_SIZE - 1) * 2 + 2] == y) {
           this.levelData[0] = Number(this.levelData[0]) - 2;
-          this.levelData.splice([(selection - 6) * 2 + 1], 2);
+          this.levelData.splice([(selection - TILESET_SIZE - 1) * 2 + 1], 2);
         } else {
           let isNotUsed = 0;
           for (let i = 1; i < this.levelData[0]; i += 2) {
@@ -50,13 +52,13 @@ class Map {
           }
           console.log(isNotUsed);
           if (!isNotUsed) {
-            this.levelData[(selection - 6) * 2 + 1] = x;
-            this.levelData[(selection - 6) * 2 + 2] = y;
+            this.levelData[(selection - TILESET_SIZE - 1) * 2 + 1] = x;
+            this.levelData[(selection - TILESET_SIZE - 1) * 2 + 2] = y;
           }
         }
       } else {
-        this.levelData.splice((selection - 6) * 2 + 1, 0, x);
-        this.levelData.splice((selection - 6) * 2 + 2, 0, y);
+        this.levelData.splice((selection - TILESET_SIZE - 1) * 2 + 1, 0, x);
+        this.levelData.splice((selection - TILESET_SIZE - 1) * 2 + 2, 0, y);
         this.levelData[0] = Number(this.levelData[0]) + 2;
       }
     }
@@ -144,23 +146,23 @@ function drawEditor() {
   }
   tPadding = width * 0.05;
   tSize = width * 0.15;
-  maxScroll = Tileset.height + Spawns.height + (Tileset.height / 60 + Spawns.height / 60 - 10) * tPadding;
+  maxScroll = (tSize + tPadding) * (TILESET_SIZE + BLOCK_NUMBER + 1) + tPadding - height;
   noFill();
   strokeWeight(4);
   stroke("#000000");
   for (let i = 0; i < Tileset.height / 60; i++) {
     if (i == currSel) {
-      rect(editorSize + tPadding - 4, (tSize + tPadding) * i - scrollPos + tPadding - 4, tSize + 8, tSize + 8);
+      rect(editorSize + tPadding - BLOCK_NUMBER, (tSize + tPadding) * i - scrollPos + tPadding - BLOCK_NUMBER, tSize + 8, tSize + 8);
     }
     image(Tileset, editorSize + tPadding, (tSize + tPadding) * i - scrollPos + tPadding, tSize, tSize, 0, 60 * i, 60, 60);
   }
-  for (let i = Tileset.height / 60; i < maxScroll / 60; i++) {
+  for (let i = Tileset.height / 60; i <= TILESET_SIZE + BLOCK_NUMBER; i++) {
     if (i == currSel) {
       rect(editorSize + tPadding, (tSize + tPadding) * i - scrollPos + tPadding, tSize, tSize);
     }
     let extra = 0;
     if ((Number(map.levelData[0]) + 1) / 2 <= i - Tileset.height / 60) {
-      extra = 4;
+      extra = BLOCK_NUMBER;
     }
     image(Spawns, editorSize + tPadding, (tSize + tPadding) * i - scrollPos + tPadding, tSize, tSize, 0, 60 * (extra + i - Tileset.height / 60), 60, 60);
   }
@@ -204,13 +206,13 @@ function mousePressed() {
     let bufY = (mouseY + scrollPos - tPadding) % (tSize + tPadding);
     if (bufY >= 0 && bufY <= tSize) {
       let bufCurrSel = parseInt((mouseY + scrollPos - tPadding) / (tSize + tPadding));
-      if ((Number(map.levelData[0]) + 1) / 2 + 5 >= bufCurrSel) {
+      if ((Number(map.levelData[0]) + 1) / 2 + TILESET_SIZE >= bufCurrSel) {
         currSel = parseInt((mouseY + scrollPos - tPadding) / (tSize + tPadding));
       }
     }
   }
   if (mouseIn("EDITOR")) {
-    let currMax = (Number(map.levelData[0]) - 1) / 2 + 5;
+    let currMax = (Number(map.levelData[0]) - 1) / 2 + TILESET_SIZE;
     map.editPos(parseInt(roundTo(mouseX, map.tileSize) / map.tileSize), parseInt(roundTo(mouseY, map.tileSize) / map.tileSize), currSel, currMax !== currSel - 1);
   }
   if (mouseX >= 0 && mouseX <= editorSize - 5 && mouseY >= editorSize + 5 && mouseY <= height) {
@@ -291,7 +293,16 @@ function arrayToString(array) {
 }
 
 function loadFile(data) {
-  console.log(data.data.split('\n').substr(0, ));
-  map = new Map(data.data.split('\n'));
+  let bufData = data.data.split('\n');
+  while (bufData[bufData.length - 1] == "") {
+    bufData.splice(bufData.length - 1, 1);
+  }
+  for (let i = 0; i < bufData.length; i++) {
+    bufData[i] = bufData[i].replace(/(\r\n|\n|\r)/gm, "");
+    if (bufData[i].length == 2) {
+      bufData[i] = Number(bufData[i]);
+    }
+  }
+  map = new Map(bufData);
   isEmpty = false;
 }

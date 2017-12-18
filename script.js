@@ -12,6 +12,7 @@ class Box {
     //initial values
     this.boxMoving = false;
     this.isClicked = false;
+    this.onTele = false;
     //this.blink = true;
     this.xAnim = 0;
     this.yAnim = 0;
@@ -128,6 +129,10 @@ class Map {
   }
 
   getBlock(x, y) {
+    let size = map.levelData[Number(map.levelData[0])].length - 1;
+    if (x < 0 || x > size || y < 0 || y > size) {
+      return '0';
+    }
     return this.levelData[y + Number(this.levelData[0])].charAt(x);
   }
 
