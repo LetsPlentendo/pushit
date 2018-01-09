@@ -241,7 +241,7 @@ function cookieIsValid(cookie) {
 }
 
 function getNewLevelName(oldName) {
-  if (oldName == "1_10") {
+  if (oldName == "1_12") {
     return "1_1";
   }
   return (oldName.split('_')[0] + "_" + (Number(oldName.split('_')[1]) + 1));
